@@ -5,16 +5,39 @@ class Car {
         this.width = width;
         this.height = height;
 
+        this.speed = 0;
+        this.acceleration = 0.2;
+        this.maxSpeed = 3;
+        this.friction = 0.05;
+
         this.controls = new Controls();
     }
 
     update() {
         if(this.controls.forward){
-            this.y-=2;
+            this.speed+=this.acceleration;
         }
         if(this.controls.reverse){
-            this.y+=2;
+            this.speed-=this.acceleration;
         }
+
+        // implement a max speed
+        if (this.speed > this.maxSpeed) {
+            this.speed = this.maxSpeed;
+        }
+
+        // implement a max reverse speed
+        if (this.speed < - this.maxSpeed/2) {
+            this.speed = this.maxSpeed/2;
+        }
+
+        // is the car moving? implement friction
+        if (this.speed > 0) {
+            this.speed -= this.friction;
+        }
+
+        this.y-=this.speed;
+
         if(this.controls.left){
             this.x-=2;
         }
