@@ -11,11 +11,16 @@ class Car {
         this.friction = 0.05;
         this.angle = 0;
 
+        // sensor needs this as argument because in sensor.js we have car in the constructor
+        // in other words, the sensor only exists in the context of being attached to the car
+
+        this.sensor = new Sensor(this);
         this.controls = new Controls();
     }
 
     update() {
         this.#move();
+        this.sensor.update();
     }
 
     #move() {
@@ -80,5 +85,7 @@ class Car {
         ctx.fill();
 
         ctx.restore();
+
+        this.sensor.draw(ctx);
     }
 }
