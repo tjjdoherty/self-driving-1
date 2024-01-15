@@ -70,6 +70,7 @@ class Sensor {
             };
             this.rays.push([start, end]);
             // like with the road borders, we are using an array of objects for the rays acting as sensors for the car.
+            // console.log(this.rays[i][0].x, this.rays[i][0].y)
         }
     }
 
