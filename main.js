@@ -16,7 +16,7 @@ animate();
 // then the car is redrawn (draw(ctx))
 
 function animate() {
-    car.update();
+    car.update(road.borders);
 
     canvas.height=window.innerHeight;
 
