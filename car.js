@@ -1,5 +1,5 @@
 class Car {
-    constructor(x, y, width, height) {
+    constructor(x, y, width, height, controlType, maxSpeed=3) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -7,7 +7,7 @@ class Car {
 
         this.speed = 0;
         this.acceleration = 0.2;
-        this.maxSpeed = 3;
+        this.maxSpeed = maxSpeed;
         this.friction = 0.05;
         this.angle = 0;
         this.damaged = false;
@@ -15,14 +15,38 @@ class Car {
         // sensor needs this as argument because in sensor.js we have car in the constructor
         // in other words, the sensor only exists in the context of being attached to the car
 
-        this.sensor = new Sensor(this);
-        this.controls = new Controls();
+        if (controlType != "DUMMY") {
+            this.sensor = new Sensor(this);
+        }
+
+        this.controls = new Controls(controlType);
     }
 
-    update(roadBorders) {
-        this.#move();
-        this.polygon = this.#createPolygon();
-        this.sensor.update(roadBorders);
+    update(roadBorders, traffic) {
+        // as long as the car isn't damaged, stuff happens, if damaged = true all movement stops
+        if (!this.damaged) {
+            this.#move();
+            this.polygon = this.#createPolygon();
+            this.damaged = this.#assessDamage(roadBorders, traffic);
+        };
+        if (this.sensor) {
+            this.sensor.update(roadBorders, traffic);
+        }
+    }
+
+    #assessDamage(roadBorders, traffic) {
+        for (let i = 0; i < roadBorders.length; i++) {
+            if (polysIntersect(this.polygon, roadBorders[i])) {
+                return true;
+            }
+        }
+
+        for (let i = 0; i < traffic.length; i++) {
+            if (polysIntersect(this.polygon, traffic[i].polygon)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // the createPolygon means we dont need to translate, fill and restore the car position in draw(ctx) as we had written before.
@@ -98,14 +122,20 @@ class Car {
     }
 
 
-    draw(ctx) {
+    draw(ctx, color) {
+        if (this.damaged) {
+            ctx.fillStyle="gray";
+        } else {
+            ctx.fillStyle=color;
+        }
         ctx.beginPath();
         ctx.moveTo(this.polygon[0].x, this.polygon[0].y);
         for (let i = 1; i < this.polygon.length; i++) {
             ctx.lineTo(this.polygon[i].x, this.polygon[i].y);
         }
         ctx.fill();
-
-        this.sensor.draw(ctx);
+        if (this.sensor) {
+            this.sensor.draw(ctx);
+        }
     }
 }

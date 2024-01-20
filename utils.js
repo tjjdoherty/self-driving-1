@@ -27,3 +27,23 @@ function getIntersection(A, B, C, D) {
 
     return null;
 }
+
+function polysIntersect(poly1, poly2) {
+    for (let i = 0; i < poly1.length; i++) {
+        for (let j = 0; j < poly2.length; j++) {
+            const touch = getIntersection(
+                poly1[i],
+                poly1[(i+1)%poly1.length],
+                // ^ above line, for a 4 sided polygon points are p0,p1,p2,p3
+                // i + 1 modulo length will give p0 which is great as p3 connects back to p0
+                // without it, just doing i + 1 we get an error anyway.
+                poly2[j],
+                poly2[(j+1)%poly2.length]
+            );
+            if (touch) {
+                return true;
+            }
+        }
+    }
+    return false;
+}

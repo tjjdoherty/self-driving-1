@@ -23,7 +23,6 @@ class Road {
             [topLeft, bottomLeft],
             [topRight, bottomRight]
         ];
-
     }
 
     // method below puts the car in the middle of a lane when Car object is called in main.js
