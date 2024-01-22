@@ -17,8 +17,12 @@ class Car {
 
         if (controlType != "DUMMY") {
             this.sensor = new Sensor(this);
+            this.brain = new NeuralNetwork(
+                [this.sensor.rayCount, 6, 4]
+                // ^  specifying the neuron counts in layers, the first is the number of rays, 6 in a hidden layer
+                // and 4 outputs - fwd, left, right and back
+            );
         }
-
         this.controls = new Controls(controlType);
     }
 
@@ -31,6 +35,15 @@ class Car {
         };
         if (this.sensor) {
             this.sensor.update(roadBorders, traffic);
+            const offsets = this.sensor.readings.map(
+                sensor => sensor == null ? 0 : 1 - sensor.offset
+            );
+            // ^ if there's no sensor reading, return 0 no action, if there is a sensor reading...
+            // large offset (far away reading) makes it nearly 0, little action needed, small offset (close reading) makes it nearly 1, action needed
+
+            const outputs = NeuralNetwork.feedForward(offsets, this.brain);
+            // ^^ THIS LINE BREAKING IT RIGHT NOW, 1:53:31 in video
+            console.log(outputs);
         }
     }
 
