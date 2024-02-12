@@ -1,12 +1,13 @@
 class NeuralNetwork {
     constructor(neuronCounts) {
         this.levels = [];
-        for (let i = 0; i < neuronCounts; i++) {
+        for (let i = 0; i < neuronCounts.length - 1; i++) {
             this.levels.push(new Level(
                 neuronCounts[i], neuronCounts[i + 1]
             ));
         }
         // ^ because a neural network has the floor level and ceiling level of neurons
+        // we iterate over neuronCounts Length as this is the length of the array as a number... don't iterate over the array itself.
     }
 
     static feedForward(givenInputs, network) {
@@ -33,7 +34,7 @@ class Level {
         // inputs are the values we'll get from the car sensors (if we're the first level).
 
         this.weights = [];
-        for (let i = 0; i < inputCount.length; i++) {
+        for (let i = 0; i < inputCount; i++) {
             this.weights[i] = new Array(outputCount);
         }
 
@@ -63,7 +64,7 @@ class Level {
         }
 
         for (let i = 0; i < level.outputs.length; i++) {
-            let sum = 0;
+            let sum = 0
             for (let j = 0; j < level.inputs.length; j++) {
                 sum += level.inputs[j]*level.weights[j][i];
             }
@@ -76,7 +77,7 @@ class Level {
             if (sum > level.biases[i]) {
                 level.outputs[i] = 1;
             } else {
-                level.outputs = 0;
+                level.outputs[i] = 0;
             }
         }
 

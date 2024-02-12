@@ -42,8 +42,8 @@ class Car {
             // large offset (far away reading) makes it nearly 0, little action needed, small offset (close reading) makes it nearly 1, action needed
 
             const outputs = NeuralNetwork.feedForward(offsets, this.brain);
-            // ^^ THIS LINE BREAKING IT RIGHT NOW, 1:53:31 in video
             console.log(outputs);
+            // ^ array is always 0 right now, offsets aren't changing
         }
     }
 
