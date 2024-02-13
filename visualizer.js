@@ -18,8 +18,8 @@ class Visualizer {
 
         // here we're just drawing a level,canvas extends from top left (0,0) to bottom right (x, y)
 
-        const {inputs, outputs} = level;
-        // ^ this helps shorten code as it will put "level." before the two consts 
+        const {inputs, outputs, weights} = level;
+        // ^ this helps shorten code as it will put "level." before the consts that are destructured
         // so level.inputs and level.outputs can both just be written inputs/outputs
 
         for (let i = 0; i < inputs.length; i++) {
@@ -34,8 +34,14 @@ class Visualizer {
                     top
                 );
                 ctx.lineWidth = 2;
-                ctx.strokeStyle = "orange";
+                const value = weights[i][j];
+                const alpha = Math.abs(value);
+                const R = value < 0 ? 0 : 255;
+                const G = R;
+                const B = value > 0 ? 0 : 255;
+                ctx.strokeStyle = "rgba("+R+", "+G+", "+B+","+alpha+")";
                 ctx.stroke();
+                // ^ the above creates either blue or yellow links between input/output. Brighter (less transparent) for stronger link and blue for negative, yellow for positive.
             }
         }
 
