@@ -44,7 +44,6 @@ class Car {
             // large offset (far away reading) makes it nearly 0, little action needed, small offset (close reading) makes it nearly 1, action needed
 
             const outputs = NeuralNetwork.feedForward(offsets, this.brain);
-            console.log(outputs);
 
             if (this.useBrain) {
                 this.controls.forward = outputs[0];

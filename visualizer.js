@@ -18,9 +18,9 @@ class Visualizer {
 
         // here we're just drawing a level,canvas extends from top left (0,0) to bottom right (x, y)
 
-        const {inputs, outputs, weights} = level;
-        // ^ this helps shorten code as it will put "level." before the consts that are destructured
-        // so level.inputs and level.outputs can both just be written inputs/outputs
+        const {inputs, outputs, weights, biases} = level;
+        // ^ this is a destructuring assignment. Syntactic sugar - level is an object and I can extract all of these properties of the level
+        // e.g. i don't need to write level.biases - just biases from here on. Cleaner and more readable code
 
         for (let i = 0; i < inputs.length; i++) {
             for (let j = 0; j < outputs.length; j++) {
@@ -33,13 +33,8 @@ class Visualizer {
                     Visualizer.#getNodeX(outputs, j, left, right),
                     top
                 );
-                ctx.lineWidth = 2;
-                const value = weights[i][j];
-                const alpha = Math.abs(value);
-                const R = value < 0 ? 0 : 255;
-                const G = R;
-                const B = value > 0 ? 0 : 255;
-                ctx.strokeStyle = "rgba("+R+", "+G+", "+B+","+alpha+")";
+                ctx.lineWidth = 2;                
+                ctx.strokeStyle = getRGBA(weights[i][j]);
                 ctx.stroke();
                 // ^ the above creates either blue or yellow links between input/output. Brighter (less transparent) for stronger link and blue for negative, yellow for positive.
             }
@@ -55,6 +50,10 @@ class Visualizer {
 
             ctx.beginPath();
             ctx.arc(x, bottom, nodeRadius, 0, Math.PI * 2);
+            ctx.fillStyle="black";
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(x, bottom, nodeRadius * 0.7, 0, Math.PI * 2);
             ctx.fillStyle="white";
             ctx.fill();
             // ^ this has created 5 dots for each of the five sensors on the car
@@ -65,8 +64,23 @@ class Visualizer {
             const x = Visualizer.#getNodeX(outputs, i, left, right);
             ctx.beginPath();
             ctx.arc(x, top, nodeRadius, 0, Math.PI * 2);
+            ctx.fillStyle = "black";
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(x, top, nodeRadius * 0.7, 0, Math.PI * 2);
             ctx.fillStyle = "white";
-            ctx.fill();            
+            ctx.fill();    
+
+            // ^ for both input and output nodes we drew in black at full size before drawing in white
+            // 
+            
+            ctx.beginPath();
+            ctx.lineWidth = 2;
+            ctx.arc(x, top, nodeRadius * 0.8, 0, Math.PI * 2);
+            ctx.strokeStyle = getRGBA(biases[i]);
+            ctx.setLineDash([3,3]);
+            ctx.stroke();
+            ctx.setLineDash([]);
         }
 
     }
