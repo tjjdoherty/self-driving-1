@@ -47,7 +47,7 @@ function animate() {
 
     carCtx.restore();
 
-   // Visualizer.drawNetwork(networkCtx, car.brain);
+   Visualizer.drawNetwork(networkCtx, car.brain);
 
     requestAnimationFrame(animate);
 }
