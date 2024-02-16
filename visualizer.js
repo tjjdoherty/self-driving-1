@@ -6,10 +6,25 @@ class Visualizer {
         const width = ctx.canvas.width - margin * 2;
         const height = ctx.canvas.height - margin * 2;
 
-        Visualizer.drawLevel(ctx, network.levels[0],
-            left, top,
-            width, height
-        );
+        const levelHeight = height / network.levels.length;
+        
+        // below: to see the biases in mid layer we needed to draw the network top down not bottom up, so the loop is different
+
+        for (let i = network.levels.length - 1; i >= 0; i--) {
+            const levelTop = top + 
+                lerp(
+                    height - levelHeight,
+                    0,
+                    network.levels.length == 1 
+                    ? 0.5 
+                    : i / (network.levels.length - 1)
+                );
+
+            Visualizer.drawLevel(ctx, network.levels[i],
+                left, levelTop,
+                width, levelHeight
+                );
+        }
     }
 
     static drawLevel (ctx, level, left, top, width, height) {
@@ -54,7 +69,7 @@ class Visualizer {
             ctx.fill();
             ctx.beginPath();
             ctx.arc(x, bottom, nodeRadius * 0.7, 0, Math.PI * 2);
-            ctx.fillStyle="white";
+            ctx.fillStyle=getRGBA(inputs[i]);
             ctx.fill();
             // ^ this has created 5 dots for each of the five sensors on the car
             
@@ -68,7 +83,7 @@ class Visualizer {
             ctx.fill();
             ctx.beginPath();
             ctx.arc(x, top, nodeRadius * 0.7, 0, Math.PI * 2);
-            ctx.fillStyle = "white";
+            ctx.fillStyle = getRGBA(outputs[i]);
             ctx.fill();    
 
             // ^ for both input and output nodes we drew in black at full size before drawing in white
