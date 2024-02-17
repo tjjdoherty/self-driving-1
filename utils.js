@@ -54,4 +54,11 @@ function getRGBA(value) {
     const G = R;
     const B = value > 0 ? 0 : 255;
     return "rgba("+R+", "+G+", "+B+","+alpha+")";
-}      
+}
+
+function getRandomColor() {
+    const hue = 290 + Math.random() * 260;
+    return "hsl("+hue+", 100%, 60%)";
+}
+
+// hue, saturation, lightness (HSL) and 290 + random between 260 misses out blue hues because our car is default blue

@@ -9,7 +9,7 @@ const networkCtx = networkCanvas.getContext("2d");
 
 const road = new Road(carCanvas.width/2, carCanvas.width*0.9);
 
-const N = 100;
+const N = 1;
 const cars = generateCars(N);
 let bestCar = cars[0];
 if (localStorage.getItem("bestBrain")) {
@@ -28,9 +28,13 @@ if (localStorage.getItem("bestBrain")) {
 // localStorage only works with Strings
 
 const traffic = [
-    new Car(road.getLaneCenter(1), -100, 30, 50, "DUMMY", 2),
-    new Car(road.getLaneCenter(0), -250, 30, 50, "DUMMY", 2),
-    new Car(road.getLaneCenter(2), -300, 30, 50, "DUMMY", 2)
+    new Car(road.getLaneCenter(0), -100, 30, 50, "DUMMY", 2, getRandomColor()),
+    new Car(road.getLaneCenter(0), -350, 30, 50, "DUMMY", 2, getRandomColor()),
+    new Car(road.getLaneCenter(1), -500, 30, 50, "DUMMY", 2, getRandomColor()),
+    new Car(road.getLaneCenter(1), -300, 30, 50, "DUMMY", 2, getRandomColor()),
+    new Car(road.getLaneCenter(2), -800, 30, 50, "DUMMY", 2, getRandomColor()),
+    new Car(road.getLaneCenter(2), -140, 30, 50, "DUMMY", 2, getRandomColor()),
+    new Car(road.getLaneCenter(1), -650, 30, 50, "DUMMY", 2, getRandomColor())
 ];
 
 // ^^ this car.draw(ctx) is a duplicate that needed to be deleted out to fix the sensors being drawn.
@@ -71,7 +75,7 @@ function animate(time) {
         cars[i].update(road.borders, traffic);
     }
     
-    // with N = 100 we generate 100 cars with random input biases, and only car[0] has a sensor
+    // defined further up, with N = 100 we generate 100 cars with random input biases, and only car[0] has a sensor
     // but we don't care for car[0] in its own right, we want the car that goes the furthest
     // that is the car travelling up the canvas the most, and up on the canvas is a smaller y value
     // so bestCar is a variable that tracks the car travelling furthest up the road by the lowest y value
