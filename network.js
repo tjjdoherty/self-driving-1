@@ -23,6 +23,31 @@ class NeuralNetwork {
         // using the values of the level before it
         return outputs;
     }
+
+    // mutating the network below: amount is v important - 100% or 1 is basically another pure randomization like the initial refresh, but on every level of the networkl
+    // amount = 0 would change nothing
+    // we are just defining the method here and amount = 1 is placeholder; in main.js we will call the mutate function and provide another mutation amount e.g. 0.1
+
+    static mutate(network, amount = 1) {
+        network.levels.forEach(level => {
+            for (let i = 0; i < level.biases.length; i++) {
+                level.biases[i] = lerp(
+                    level.biases[i],
+                    Math.random() * 2 - 1,
+                    amount
+                )
+            }
+            for (let i = 0; i < level.weights.length; i++) {
+                for (let j = 0; j < level.weights.length; j++) {
+                    level.weights[i][j] = lerp(
+                        level.weights[i][j],
+                        Math.random() * 2 - 1,
+                        amount
+                    )
+                }
+            }
+        })
+    }
 }
 
 class Level {

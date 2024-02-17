@@ -11,19 +11,44 @@ const road = new Road(carCanvas.width/2, carCanvas.width*0.9);
 
 const N = 100;
 const cars = generateCars(N);
+let bestCar = cars[0];
+if (localStorage.getItem("bestBrain")) {
+    for (let i = 0; i < cars.length; i++) {
+        cars[i].brain = JSON.parse(
+            localStorage.getItem("bestBrain")
+        );
+        if (i != 0) {
+            NeuralNetwork.mutate(cars[i].brain, 0.1);
+        }
+    }
+    
+}
+
+// above: use let for bestCar not const because bestCar will be constantly changing
+// localStorage only works with Strings
 
 const traffic = [
-    new Car(road.getLaneCenter(1), -100, 30, 50, "DUMMY", 1.5)
+    new Car(road.getLaneCenter(1), -100, 30, 50, "DUMMY", 2),
+    new Car(road.getLaneCenter(0), -250, 30, 50, "DUMMY", 2),
+    new Car(road.getLaneCenter(2), -300, 30, 50, "DUMMY", 2)
 ];
 
 // ^^ this car.draw(ctx) is a duplicate that needed to be deleted out to fix the sensors being drawn.
 
 animate();
 
+function save() {
+    localStorage.setItem("bestBrain",
+        JSON.stringify(bestCar.brain));
+}
+
+function discard() {
+    localStorage.removeItem("bestBrain");
+}
+
 //requestAnimationFrame calls the animate function many times per second
 // gives the illusion of moment we want to see.
-// every time its called, update is called (changes coordinates);
-// then the car is redrawn (draw(ctx))
+// every time its called, update is called (changes coordinates) then the car is redrawn (draw(ctx))
 
 function generateCars(N) {
     const cars = [];
@@ -51,7 +76,7 @@ function animate(time) {
     // that is the car travelling up the canvas the most, and up on the canvas is a smaller y value
     // so bestCar is a variable that tracks the car travelling furthest up the road by the lowest y value
 
-    const bestCar = cars.find(
+    bestCar = cars.find(
         c => c.y == Math.min(
             ...cars.map(c => c.y)
         ));
